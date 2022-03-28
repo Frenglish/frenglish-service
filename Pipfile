@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = "==4.0.2"
+psycopg2-binary = "==2.9.3"
+django-allauth = "*"
+python3-openid = "*"
+requests = "*"
+requests-oauthlib = "*"
+graphene-django = ">=3.0.0b7"
+graphene = ">=3.0"
+python-dotenv = "*"
+django-extensions = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
