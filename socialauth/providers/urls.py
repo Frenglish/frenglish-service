@@ -1,3 +1,6 @@
+__all__ = ["urlpatterns"]
+
+
 def _create_provider_urls():
     """
     :return: Django urls

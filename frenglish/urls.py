@@ -18,8 +18,10 @@ from django.urls import path, include
 from graphene_django.views import GraphQLView
 from django.views.decorators.csrf import csrf_exempt
 
+from socialauth.urls import create_urls as socialauth_urls
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("socialauth/", include("socialauth.urls")),
     path("graph", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    socialauth_urls(),
 ]

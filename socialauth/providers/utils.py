@@ -1,10 +1,8 @@
 from importlib import import_module
-from django.conf import settings
-from django.apps import apps
 from django.http.request import HttpRequest
 
-from ..apps import SocialauthConfig
 from .oauth2 import OAuth2ProviderAbstract
+from ..config import get_config
 
 
 def build_provider_url(request, provider):
@@ -13,26 +11,11 @@ def build_provider_url(request, provider):
     :type provider: str
     :rtype: str
     """
-    from ..apps import SocialauthConfig
+    from ..config import SocialauthConfig
 
     return request.build_absolute_uri(
-        f"/{SocialauthConfig.name.lower()}/provider/{provider}"
+        f"/{SocialauthConfig.root_path}/provider/{provider}"
     )
-
-
-def get_app_config():
-    return apps.get_app_config(SocialauthConfig.name)
-
-
-def get_config(key):
-    """
-    :param key: Config key
-    :type key: str
-    :return: Config value from settings.py
-    :rtype: any
-    """
-    app_named_prefix = SocialauthConfig.name.upper()
-    return getattr(settings, "{}_{}".format(app_named_prefix, key.upper()), None)
 
 
 def get_socialauth_providers_list():

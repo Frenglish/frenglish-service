@@ -1,8 +1,22 @@
 from django.views.generic import View
+from django.db.models import Model
+from django.contrib.auth.models import AbstractBaseUser
 
 from frenglish.core.response import create_response
-
 from .oauth2 import OAuth2ProviderAbstract
+from ..account.models import SocialAccount
+
+
+def _connect_social_account(social_account, user):
+    """
+    :param social_account: SocialAccount model instance
+    :type social_account: SocialAccount
+    :param user: Any User model from `get_user_model()`
+    :type user: AbstractBaseUser
+    :return: True if connection success or False
+    :rtype: bool
+    """
+    pass
 
 
 class OAuth2CallbackView(View):
@@ -36,11 +50,43 @@ class OAuth2CallbackView(View):
         return view
 
     def get(self, request):
-        adapter = self.provider.get_adapter(request)
+        provider = self.provider
+        adapter = provider.get_adapter(request)
 
-        if "code" not in request.GET:
-            return create_response(error="authorization code required")
+        token = adapter.fetch_token()
+        user_data = adapter.fetch_user_data(token)
 
-        return create_response(
-            adapter.obtain_access_token_by_code(request.GET.get("code"))
-        )
+        try:
+            social_account = SocialAccount.objects.get(
+                provider=provider.name,
+                uid=user_data["id"],
+            )
+        except SocialAccount.DoesNotExist:
+            from django.contrib.auth import get_user_model
+
+            user_model = get_user_model()
+            new_user = user_model(
+                first_name=user_data.get("first_name"),
+                last_name=user_data.get("last_name"),
+            )
+
+            if user_data.get("username"):
+                new_user.username = user_data.get("username")
+
+            new_user.set_unusable_password()
+            new_user.save()
+
+            social_account = SocialAccount(
+                uid=user_data.get("id"),
+                first_name=user_data.get("first_name"),
+                last_name=user_data.get("last_name"),
+                provider=provider.name,
+                info=user_data,
+                user=new_user,
+            ).save()
+
+            _connect_social_account(social_account, new_user)
+
+            return create_response({"USER": social_account["provider"]})
+        else:
+            return create_response({"USER": social_account.provider})

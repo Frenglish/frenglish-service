@@ -1,6 +1,13 @@
-from django.urls import path, include
-from .apps import SocialauthConfig
+from django.urls import re_path, path, include
+from .providers import urls
 
-_app_name = SocialauthConfig.name
+__all__ = ["create_urls", "urlpatterns"]
 
-urlpatterns = [path("provider/", include("{}.providers.urls".format(_app_name)))]
+
+def create_urls():
+    from .config import SocialauthConfig
+
+    return re_path(f"{SocialauthConfig.root_path}/", include("socialauth.urls"))
+
+
+urlpatterns = [path("provider/", include(urls))]

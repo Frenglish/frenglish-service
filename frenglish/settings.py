@@ -33,10 +33,17 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Graphene
 
-GRAPHENE = {"SCHEMA": "frenglish.schema.schema"}
+GRAPHENE = {
+    "SCHEMA": "frenglish.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
 
 
 # Socialauth
+
+# SOCIALAUTH_ROOT_PATH = "/"
 
 SOCIALAUTH_PROVIDERS = {
     "socialauth.providers.vk": {
@@ -46,11 +53,9 @@ SOCIALAUTH_PROVIDERS = {
     }
 }
 
-
 # Application definition
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -65,6 +70,7 @@ INSTALLED_APPS = [
     "django_extensions",
     # Socialauth
     "socialauth",
+    "socialauth.account",
     # Graphene
     "graphene_django",
 ]

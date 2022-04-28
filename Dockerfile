@@ -2,6 +2,7 @@ FROM python:3.8-slim as base
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+RUN echo "\n Using user: $(whoami) \n"
 
 FROM base as system_deps
 

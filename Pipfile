@@ -14,6 +14,7 @@ graphene-django = ">=3.0.0b7"
 graphene = ">=3.0"
 python-dotenv = "*"
 django-extensions = "*"
+django-graphql-jwt = "*"
 
 [dev-packages]
 

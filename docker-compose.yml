@@ -9,6 +9,7 @@ services:
     restart: always
     container_name: frenglish_django_app
     command: python manage.py runserver 0.0.0.0:8000
+    user: 1000:1000
     volumes:
       - .:/usr/app/
     ports:
